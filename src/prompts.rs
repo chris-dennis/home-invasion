@@ -1,5 +1,7 @@
 use std::io;
 use std::time::{Duration, Instant};
+use rand::seq::SliceRandom;
+use rand::thread_rng;
 
 fn prompt() -> bool {
     let mut input = String::new();
@@ -9,7 +11,7 @@ fn prompt() -> bool {
 }
 
 // this could ask and then ask if
-fn options(){
+fn options() {
     println!("... you walk down the stairs towards the noise. You peak and see 3 dudes");
     println!("WHAT SHOULD WE DO? (1)confront, (2)run, or (3)hide?");
     // you can (1)confront, (2)run, or (3)hide. print this here
@@ -21,25 +23,90 @@ fn options(){
     if input.trim() == "1" {
         println!("you have chosen confront()");
         //confront();
-    } else if input.trim() == "2"{
+    } else if input.trim() == "2" {
         println!("you have chosen run, we find the key and allat");
-        // findKey()
+        find_key();
     } else {
         println!("you chose hide and the robbers got to you!");
-    // if the input is 3 or else, then they lose, we assume that the robbers get to you.
+        // if the input is 3 or else, then they lose, we assume that the robbers get to you.
+    }
 }
 
 // we want to run() and then find the key and a strategy to escape
-fn findKey() {
+fn find_key() {
     println!("we get away from them");
     println!("You want to find a key and a strategy to leave");
-    println!("You forgot where you put the key, so we go upstairs and search the rooms");
-    println!("what do you want to search first? bathroom? storage room? your bedroom");
+    println!("what do you want to search first? (1)bathroom, (2)storage room, (3)your bedroom?");
 
     let mut input = String::new();
     io::stdin().read_line(&mut input).unwrap();
 
+    let elements = vec!["key", "med kit", "shotgun"];
+
+    // we want to randomly place the key, health potion, and gun in the three rooms
+    let mut rng = rand::thread_rng();
+    let mut shuffled_elements = elements.clone();
+    shuffled_elements.shuffle(&mut rng);
+
+    // Assign the shuffled elements to variables
+    let bathroom = shuffled_elements[0].to_string();
+    let bedroom = shuffled_elements[1].to_string();
+    let storage_room = shuffled_elements[2].to_string();
+
+    // Print the assigned variables
+    println!("bathroom: {}", bathroom);
+    println!("bedroom: {}", bedroom);
+    println!("storage_room: {}", storage_room);
+
+    // we might need to have a list that keeps track of the rooms visited. Need to make sure we do
+    // not visit more than two, so a counter and a list for visited rooms
+
+
+    // we are in bathroom
+    if input.trim() == "1" {
+        println!("we check the cabinet");
+        if bathroom == "key" {
+            println!("you got the key");
+            // find a way out and call confront(), no need to check any more rooms?
+        }
+        // else then:
+            // we retrieve the item. we could search another room or confront
+
+
+    // if we are in the bedroom
+    } else if input.trim() == "2" {
+        println!("we check the safe under the bed");
+        // BIG if puzzle is true then :
+        if bedroom == "key" {
+            println!("you got the key");
+            // find a way out and call confront(), no need to check any more rooms?
+        }
+        // inner else with not key:
+            // you pass and the key is not there
+        // BIG else the robbers get to you if you run out of time, matched with puzzle if
+
+
+    // if we are in the storage room
+    } else {
+        println!("we check the locker in the storage");
+        // BIG if puzzle is true then :
+        if bedroom == "key" {
+            println!("you got the key");
+            // find a way out and call confront(), no need to check any more rooms?
+        }
+        // inner else with not key:
+            // you pass and the key is not there
+        // BIG else the robbers get to you if you run out of time, matched with puzzle if
+
+    }
 }
+
+// implement puzzle 1
+// we do listen and silent
+
+// implement puzzle 2
+// we do open and p,n,o,e
+
 
 pub fn intro() {
     println!("You hear a faint knock at the door. Investigate? (y/n)");
