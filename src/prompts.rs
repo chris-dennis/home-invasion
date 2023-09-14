@@ -3,6 +3,8 @@ use std::time::{Duration, Instant};
 use rand::seq::SliceRandom;
 use rand::thread_rng;
 
+mod confront;
+
 fn prompt() -> bool {
     let mut input = String::new();
     io::stdin().read_line(&mut input).unwrap();
@@ -22,7 +24,7 @@ fn options() {
     // if the input is 1, then we call confront()
     if input.trim() == "1" {
         println!("you have chosen confront()");
-        //confront();
+        confront::confront();
     } else if input.trim() == "2" {
         println!("you have chosen run, we find the key and allat");
         find_key();
