@@ -22,8 +22,6 @@ fn options() {
     let mut input = String::new();
     io::stdin().read_line(&mut input).unwrap();
 
-    // after I have saved the input in input, then we want to check if it is either 1 or 2 or 3
-    // if the input is 1, then we call confront()
     if input.trim() == "1" {
         println!("you have chosen confront()");
         confront::confront();
@@ -32,20 +30,19 @@ fn options() {
         find_key();
     } else {
         println!("you chose hide and the robbers got to you!");
-        // if the input is 3 or else, then they lose, we assume that the robbers get to you.
     }
 }
 
-// we want to run() and then find the key and a strategy to escape
 fn find_key() {
     println!("we get away from them");
     println!("You want to find a key and a strategy to leave");
-    println!("what do you want to search first? (1)bathroom, (2)storage room, (3)your bedroom?");
+    println!("what do you want to search first? (1)storage room, (2)bedroom, (3)bathroom");
 
     let mut input = String::new();
     io::stdin().read_line(&mut input).unwrap();
 
-    let elements = vec!["key", "med kit", "shotgun"];
+    let elements = vec!["key", "nothing", "shotgun"];
+    let mut checked_rooms = vec![false, false, false];
 
     // we want to randomly place the key, health potion, and gun in the three rooms
     let mut rng = rand::thread_rng();
@@ -53,64 +50,186 @@ fn find_key() {
     shuffled_elements.shuffle(&mut rng);
 
     // Assign the shuffled elements to variables
-    let bathroom = shuffled_elements[0].to_string();
-    let bedroom = shuffled_elements[1].to_string();
-    let storage_room = shuffled_elements[2].to_string();
+    let bathroom_item = shuffled_elements[0].to_string();
+    let bedroom_item = shuffled_elements[1].to_string();
+    let storage_item = shuffled_elements[2].to_string();
 
     // Print the assigned variables
-    println!("bathroom: {}", bathroom);
-    println!("bedroom: {}", bedroom);
-    println!("storage_room: {}", storage_room);
+    println!("storage_room: {}", storage_item);
+    println!("bedroom: {}", bedroom_item);
+    println!("bathroom: {}", bathroom_item);
 
     // we might need to have a list that keeps track of the rooms visited. Need to make sure we do
     // not visit more than two, so a counter and a list for visited rooms
 
-
-    // we are in bathroom
+    // we are in storage room
     if input.trim() == "1" {
-        println!("we check the cabinet");
-        if bathroom == "key" {
-            println!("you got the key");
-            // find a way out and call confront(), no need to check any more rooms?
-        }
-        // else then:
-            // we retrieve the item. we could search another room or confront
+        println!("we check the locker in the storage");
+        if puzzle1(){
+            if storage_item == "key" {
+                println!("you got the key");
+                println!("time to get out of here and confront these guys");
+                confront::confront();
+            } else {
+                println!("the key is not here, you found: {}", storage_item);
+                if storage_item == "shotgun"{
+                    const HAS_WEAPON: bool = true;
+                }
+                println!("You can check another room before they get to you");
+                println!("the remaining rooms are: (2)bedroom, and (3)bathroom");
+                input.clear(); // Clear the previous content
+                io::stdin().read_line(&mut input).unwrap();
+                // if they key is there then you win else you run out of time
+                if input.trim() == "2"{
+                    println!("we check the safe under the bed");
+                    if puzzle2() {
+                        if bedroom_item == "key" {
+                            println!("you got the key");
+                            println!("time to get out of here and confront these guys");
+                            confront::confront();
+                        } else {
+                            println!("You couldn't find the key and the robbers got to you!");
+                        }
+                    } else {
+                        println!("You couldn't open the safe and the the robbers got to you :(");
+                    }
 
+                } else if input.trim() == "3" {
+                    println!("we check the bathroom cabinet");
+                    if bathroom_item == "key" {
+                        println!("you got the key");
+                        println!("time to get out of here and confront these guys");
+                        confront::confront();
+                    } else {
+                        println!("You couldn't find the key and the robbers got to you!");
+                    }
+                } else {
+                    println!("invalid answer, robbers got to you!");
+                }
+            }
+        } else{
+            println!("you couldn't open the safe!");
+            println!("the robbers got to you :(");
+        }
 
     // if we are in the bedroom
     } else if input.trim() == "2" {
         println!("we check the safe under the bed");
-        // BIG if puzzle is true then :
-        if bedroom == "key" {
-            println!("you got the key");
-            // find a way out and call confront(), no need to check any more rooms?
+        if puzzle2(){
+            if bedroom_item == "key" {
+                println!("you got the key");
+                println!("time to get out of here and confront these guys");
+                confront::confront();
+            } else {
+                println!("the key is not here, you found: {}", bedroom_item);
+                if bedroom_item == "shotgun"{
+                    const HAS_WEAPON: bool = true;
+                }
+                println!("We can check another room before they get to you");
+                println!("the remaining rooms are: (1)storage room, and (3)bathroom");
+                input.clear(); // Clear the previous content
+                io::stdin().read_line(&mut input).unwrap();
+
+                if input.trim() == "1"{
+                    println!("we check the locker in the storage");
+                    if puzzle1() {
+                        if storage_item == "key" {
+                            println!("you got the key");
+                            println!("time to get out of here and confront these guys");
+                            confront::confront();
+                        }
+                    } else {
+                        println!("You couldn't find the key and the robbers got to you!");
+                    }
+
+                } else if input.trim() == "3" {
+                    println!("we check the bathroom cabinet");
+                    if bathroom_item == "key" {
+                        println!("you got the key");
+                        println!("time to get out of here and confront these guys");
+                        confront::confront();
+                    } else {
+                        println!("You couldn't find the key and the robbers got to you!");
+                    }
+                } else {
+                    println!("invalid answer, robbers got to you!");
+                }
+            }
+        } else {
+            println!("you couldn't open the safe!");
+            println!("the robbers got to you :(");
         }
-        // inner else with not key:
-            // you pass and the key is not there
-        // BIG else the robbers get to you if you run out of time, matched with puzzle if
 
+    // if we are in the bathroom
+    } else if input.trim() == "3" {
+        println!("we check the bathroom cabinet");
+        if bathroom_item == "key" {
+            println!("you got the key");
+            println!("time to get out of here and confront these guys");
+            confront::confront();
+        } else {
+            println!("the key is not here, you found: {}", bathroom_item);
+            if bathroom_item == "shotgun"{
+                const HAS_WEAPON: bool = true;
+            }
+            println!("We can check another room before they get to you");
+            println!("the remaining rooms are: (1)storage room, and (3)bathroom");
+            input.clear(); // Clear the previous content
+            io::stdin().read_line(&mut input).unwrap();
 
-    // if we are in the storage room
+            if input.trim() == "1"{
+                println!("we check the locker in the storage");
+                if puzzle1() {
+                    if storage_item == "key" {
+                        println!("you got the key");
+                        println!("time to get out of here and confront these guys");
+                        confront::confront();
+                    }
+                } else {
+                    println!("you couldn't open the safe!");
+                    println!("the robbers got to you :(");
+                }
+
+            }  else if input.trim() == "2"{
+                println!("we check the safe under the bed");
+                if puzzle2() {
+                    if bedroom_item == "key" {
+                        println!("you got the key");
+                        println!("time to get out of here and confront these guys");
+                        confront::confront();
+                    }
+                } else {
+                    println!("you couldn't open the safe!");
+                    println!("the robbers got to you :(");
+                }
+            } else {
+                println!("invalid answer, robbers got to you!");
+            }
+        }
     } else {
-        println!("we check the locker in the storage");
-        // BIG if puzzle is true then :
-        if bedroom == "key" {
-            println!("you got the key");
-            // find a way out and call confront(), no need to check any more rooms?
-        }
-        // inner else with not key:
-            // you pass and the key is not there
-        // BIG else the robbers get to you if you run out of time, matched with puzzle if
-
+        println!("Invalid choice. Please enter a number between 1 and 3.");
     }
 }
 
-// implement puzzle 1
-// we do listen and silent
+fn puzzle1() -> bool {
+    println!("To open the safe, solve the following puzzle:");
+    println!("rearrange the letters in 'listen' to create another word");
 
-// implement puzzle 2
-// we do open and p,n,o,e
+    let mut input = String::new();
+    io::stdin().read_line(&mut input).unwrap();
 
+    return input.trim() == "silent";
+}
+
+fn puzzle2() -> bool {
+    println!("To open the locker, rearrange the letters to form the word");
+    println!("letters to rearrange: p, n, o, e");
+
+    let mut input = String::new();
+    io::stdin().read_line(&mut input).unwrap();
+
+    return input.trim() == "open";
+}
 
 pub fn intro() {
     println!("You hear a faint knock at the door. Investigate? (y/n)");
@@ -133,11 +252,7 @@ pub fn investigate() {
             println!("The robbers got you. Game over");
         } else {
             println!("You grab your trusty Mississippi Carbine.");
-            // here we have that if this is the case, then the next prompt would be:
             options();
-            // ... you walk down the stairs towards the noise. You peak and see 3 dudes
-
-            // 3 options: confront, hide, or run
         }
     } else {
         println!("The robbers got you. Game over");
