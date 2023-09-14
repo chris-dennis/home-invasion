@@ -3,12 +3,9 @@ use std::io;
 use std::io::{Read, Write};
 use std::process::exit;
 use rand::Rng;
-use crate::prompts::prompt;
+use crate::prompts::{Inventory, prompt};
 use colored::Colorize;
 
-//TODO: implement boolean logic for having weapon, having key, having health potion (cookie w/e)
-// adjust damage to make it actually challenging
-// potentially add ascii art to make some sections more appealing
 struct Henchman{
     name: String,
     health: i32,
@@ -37,19 +34,19 @@ impl Henchman{
 }
 
 
-pub fn confront(){
+pub fn confront(inv: &Inventory){
     println!("Enter E to peek your head around the corner, and assess the situation");
     let mut input = String::new();
     io::stdin().read_line(&mut input).unwrap();
 
     if input.trim().to_ascii_lowercase().eq("e"){
-        shoot()
+        shoot(inv)
     } else{
-        confront();
+        confront(inv);
     }
 }
 
-pub fn shoot(){
+pub fn shoot(inv: &Inventory){
     let mut player_health:i32 = 100;
 
     println!("---------------------------------------------------------------------------------------------------------------------------------");
@@ -58,12 +55,16 @@ pub fn shoot(){
     println!("You must defeat all the henchmen while keeping your health above 100.");
     println!("---------------------------------------------------------------------------------------------------------------------------------");
 
-    let target1 = Henchman::new("Roger", 75, 15);
-    let target2 = Henchman::new("Steve", 30, 35);
-    let target3 = Henchman::new("Tracy", 55, 20);
+    let target1 = Henchman::new("Roger", 125, 25);
+    let target2 = Henchman::new("Steve", 45, 75);
+    let target3 = Henchman::new("Tracy", 55, 40);
 
     let mut targets = vec![target1, target2, target3];
     let mut targets_size = targets.len();
+
+    if inv.weapon{
+        println!("You decide to use your shotgun, giving you 1.7x damage");
+    }
 
     while player_health > 0 {
 
@@ -104,11 +105,18 @@ pub fn shoot(){
             println!("Target {} has already been eliminated.", target_choice + 1);
             continue;
         }
-        //if playerhealth < 50 & player.hasHealthPotion...
-        //if player.hasWeapon(){ let player_attack = 30 70; let player_hit_chance = -.25 - 1}
 
-        let player_attack: u32 = rand::thread_rng().gen_range(20..=60); // 20 to 60 possible damage
-        let player_hit_chance: f32 = rand::thread_rng().gen_range(0.0..1.0);
+        let mut player_attack: u32 = 0;
+        let mut player_hit_chance: f32 = 0.0;
+
+        if inv.weapon {
+            player_attack = rand::thread_rng().gen_range(40..=75);
+            player_hit_chance = rand::thread_rng().gen_range(0.25..1.0);
+        } else{
+            player_attack = rand::thread_rng().gen_range(20..=40); // 20 to 60 possible damage
+            player_hit_chance = rand::thread_rng().gen_range(0.0..1.0);
+        }
+
 
         if player_hit_chance <=  0.35{
             println!("You missed!");
@@ -116,7 +124,7 @@ pub fn shoot(){
             let target_attack: u32 = rand::thread_rng().gen_range(5..=target.damage);
             let target_hit_chance: f32 = rand::thread_rng().gen_range(0.0..1.0);
 
-            if target_hit_chance >= 0.45 {
+            if target_hit_chance >= 0.40 {
                 player_health -= target_attack as i32;
                 println!("{} hit you for {} damage!", target.name, target_attack.to_string().bright_red().bold());
             } else{
@@ -141,7 +149,7 @@ pub fn shoot(){
                 let target_attack: u32 = rand::thread_rng().gen_range(5..=target.damage);
                 let target_hit_chance: f32 = rand::thread_rng().gen_range(0.0..1.0);
 
-                if target_hit_chance >= 0.45 {
+                if target_hit_chance >= 0.35 {
                     player_health -= target_attack as i32;
                     println!("{} hit you for {} damage!", target.name, target_attack.to_string().bright_red().bold());
                 } else{
@@ -175,9 +183,10 @@ pub fn searchBodies(){
 |	      $$/   #######  |		|
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~";
 
-    println!("You rummage through their pockets, looking for any sign of why they came...");
-    println!("You find a number written on a tattered old note... but what is it?");
-    let mut attempts = 5;
+    println!("{}", "You rummage through their pockets, looking for any sign of why they came...".italic());
+    println!("{}", "You find a number written on a tattered old note... but what is it?".italic());
+    println!("(Enter the number to continue)");
+    let mut attempts = 3;
     while attempts > 0 {
         println!("{}", ascii.bright_cyan());
 
