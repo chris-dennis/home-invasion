@@ -2,9 +2,11 @@ use std::io;
 use std::time::{Duration, Instant};
 use rand::seq::SliceRandom;
 use rand::thread_rng;
+use colored::Colorize;
 
 mod confront;
 
+// struct for player inventory
 fn prompt() -> bool {
     let mut input = String::new();
     io::stdin().read_line(&mut input).unwrap();
@@ -126,7 +128,7 @@ pub fn investigate() {
     println!("You must enter the gun safe combination as shown within 6 seconds! Begin? (y/n)");
 
     if prompt() {
-        println!("677301");
+        println!("{}", "677301".green().on_black());
         if !qte() {
             println!("The robbers got you. Game over");
         } else {
