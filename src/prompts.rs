@@ -2,7 +2,6 @@ use std::io;
 use std::process::exit;
 use std::time::{Duration, Instant};
 use rand::seq::SliceRandom;
-use rand::thread_rng;
 use colored::Colorize;
 
 mod confront;
@@ -58,7 +57,7 @@ fn find_key() {
     io::stdin().read_line(&mut input).unwrap();
 
     let elements = vec!["key", "nothing", "shotgun"];
-    let mut checked_rooms = vec![false, false, false];
+    //let mut checked_rooms = vec![false, false, false];
 
     // we want to randomly place the key, health potion, and gun in the three rooms
     let mut rng = rand::thread_rng();

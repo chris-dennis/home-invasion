@@ -1,6 +1,5 @@
-use std::any::Any;
 use std::io;
-use std::io::{Read, Write};
+use std::io::{Write};
 use std::process::exit;
 use rand::Rng;
 use crate::prompts::{Inventory, prompt};
@@ -19,9 +18,6 @@ impl Henchman{
             damage,
 
         }
-    }
-    fn attack(&self) -> u32 {
-        rand::thread_rng().gen_range(1..=self.damage)
     }
     fn take_damage(&mut self, damage: u32){
         self.health = self.health.saturating_sub(damage as i32);
@@ -71,7 +67,7 @@ pub fn shoot(inv: &Inventory){
         if targets.is_empty(){
             println!("You eliminated all of the targets. Check their bodies for a message? (y/n)");
             if prompt(){
-                searchBodies();
+                search_bodies();
             } else{
                 println!("Game over. You failed to find out why they came.");
                 break;
@@ -106,8 +102,8 @@ pub fn shoot(inv: &Inventory){
             continue;
         }
 
-        let mut player_attack: u32 = 0;
-        let mut player_hit_chance: f32 = 0.0;
+        let player_attack: u32;
+        let player_hit_chance: f32;
 
         if inv.weapon {
             player_attack = rand::thread_rng().gen_range(40..=75);
@@ -170,7 +166,7 @@ pub fn shoot(inv: &Inventory){
     }
 }
 
-pub fn searchBodies(){
+pub fn search_bodies(){
     let ascii = " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 |	o ____________________ 	   x	|
 |   *	*/  |         *       |	x	|
