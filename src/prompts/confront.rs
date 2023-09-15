@@ -48,7 +48,7 @@ pub fn shoot(inv: &Inventory){
     println!("---------------------------------------------------------------------------------------------------------------------------------");
     println!("You see 3 henchmen. {}", "It's time to shoot it out!".on_bright_red());
     println!("For every shot you take, you risk taking return fire from the henchmen.");
-    println!("You must defeat all the henchmen while keeping your health above 100.");
+    println!("You must defeat all the henchmen while keeping your health above 0.");
     println!("---------------------------------------------------------------------------------------------------------------------------------");
 
     let target1 = Henchman::new("Roger", 125, 25);
